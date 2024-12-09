@@ -1,0 +1,43 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    paths:
+      - "index.html" # Trigger the workflow only when index.html changes
+    branches:
+      - main # Trigger only on changes to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies (if any)
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+
+# Instructions for Repository Setup
+# 1. Create a repository named `gh-deployment-workflow`.
+# 2. Add an `index.html` file with content: "Hello, GitHub Actions!".
+# 3. Add a `README.md` file explaining the project and workflow.
+# 4. Add the above `deploy.yml` file in `.github/workflows/`.
+# 5. Enable GitHub Pages in your repository settings:
+#    - Go to Settings > Pages.
+#    - Select the `gh-pages` branch and root directory for deployment.
+# 6. Make a change to `index.html` and push to see the deployment in action.
